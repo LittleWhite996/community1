@@ -1,0 +1,13 @@
+.main {
+    background-color: white;
+    margin: 30px;
+}
+
+.btn-button{
+    float: right;
+    margin-bottom: 15px;
+}
+
+body{
+    background-color: #efefef;
+}
