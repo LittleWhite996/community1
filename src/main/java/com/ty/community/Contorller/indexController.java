@@ -1,4 +1,4 @@
-package com.ty.expei.Controller;
+package com.ty.community.Controller;
 
 import com.ty.community.mapper.UserMapper;
 import com.ty.community.model.User;
@@ -24,6 +24,7 @@ public class indexController {
                 User user=userMapper.findbytoken(token);
                 if(user!=null){
                     request.getSession().setAttribute("user",user);
+                    System.out.println("yeah");
                 }
                 break;
             }
