@@ -1,4 +1,4 @@
-package com.ty.community.Controller;
+package com.ty.community.Contorller;
 
 import com.ty.community.dto.AccessTokenDto;
 import com.ty.community.dto.GitHubUser;
@@ -57,6 +57,7 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(gitHubUser.getName());
             user.setAccount_id(String.valueOf(gitHubUser.getId()));
+            user.setAvatar_url(gitHubUser.getAvatar_url());
             user.setGmt_create(System.currentTimeMillis());
             user.setGmt_modified(user.getGmt_create());
             response.addCookie(new Cookie("token",token));

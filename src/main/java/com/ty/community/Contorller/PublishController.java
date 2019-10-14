@@ -25,28 +25,48 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("tag") String tag,
+            @RequestParam(value = "title",required = false) String title,
+            @RequestParam(value = "description",required = false) String description,
+            @RequestParam(value = "tag",required = false) String tag,
             HttpServletRequest request,
             Model model
     ){
+        if (title==null||title==""){
+            model.addAttribute("error","标题不能为空");
+            return "publish";
+        }
+        if (description==null||description==""){
+            model.addAttribute("error","内容不能为空");
+            return "publish";
+        }
+        if (tag==null||tag==""){
+            model.addAttribute("error","标签不能为空");
+            return "publish";
+        }
+        model.addAttribute("title",title);
+        model.addAttribute("description",description);
+        model.addAttribute("tag",tag);
         User user = null;
         Cookie[] cookies =request.getCookies();
-        for(Cookie cookie:cookies){
-            if (cookie.getName().equals("token")){
-                String token=cookie.getValue();
-                user=userMapper.findbytoken(token);
-                if(user!=null){
-                    request.getSession().setAttribute("user",user);
+        System.out.println("cookies");
+        System.out.println(cookies);
+        if (cookies!=null&&cookies.length!=0){
+            for(Cookie cookie:cookies){
+                if (cookie.getName().equals("token")){
+                    String token=cookie.getValue();
+                     user=userMapper.findbytoken(token);
+                    if(user!=null){
+                        request.getSession().setAttribute("user",user);
+                    }
+                    break;
                 }
-                break;
             }
         }
         if (user==null){
             model.addAttribute("error","用户未登录");
             return "publish";
         }
+
         Question question=new Question();
         question.setTitle(title);
         question.setDescription(description);

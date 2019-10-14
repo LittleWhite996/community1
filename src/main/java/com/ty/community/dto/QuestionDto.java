@@ -1,9 +1,10 @@
-package com.ty.community.model;
+package com.ty.community.dto;
 
+import com.ty.community.model.User;
 import lombok.Data;
 
 @Data
-public class Question {
+public class QuestionDto {
     private Integer id;
     private String title;
     private String description;
@@ -14,4 +15,5 @@ public class Question {
     private Integer comment_count;
     private Integer view_count;
     private Integer like_count;
+    private User user;
 }
