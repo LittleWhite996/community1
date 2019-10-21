@@ -5,6 +5,7 @@ import com.ty.community.dto.GitHubUser;
 import com.ty.community.mapper.UserMapper;
 import com.ty.community.model.User;
 import com.ty.community.provider.GitHubprovider;
+import com.ty.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,8 @@ public class AuthorizeController {
     private String redirect_url;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
@@ -58,16 +61,23 @@ public class AuthorizeController {
             user.setName(gitHubUser.getName());
             user.setAccount_id(String.valueOf(gitHubUser.getId()));
             user.setAvatar_url(gitHubUser.getAvatar_url());
-            user.setGmt_create(System.currentTimeMillis());
-            user.setGmt_modified(user.getGmt_create());
-            response.addCookie(new Cookie("token",token));
-            userMapper.insert(user);
 
+            userService.CreateOrUpdate(user);
+            response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }
         else {
             return "redirect:/";
         }
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie=new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 
 }
