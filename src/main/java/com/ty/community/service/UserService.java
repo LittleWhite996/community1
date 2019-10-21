@@ -2,8 +2,12 @@ package com.ty.community.service;
 
 import com.ty.community.mapper.UserMapper;
 import com.ty.community.model.User;
+import com.ty.community.model.UserExample;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -11,18 +15,26 @@ public class UserService {
     private UserMapper userMapper;
 
     public void CreateOrUpdate(User user) {
+        UserExample userExample=new UserExample();
+        userExample.createCriteria().andAccountIdEqualTo(user.getAccountId());
+        List<User> users =userMapper.selectByExample(userExample);
 
-        User dbuser=userMapper.findvyaccountid(user.getAccount_id());
-        if (dbuser==null){
-            user.setGmt_create(System.currentTimeMillis());
-            user.setGmt_modified(user.getGmt_create());
+        if (users.size()==0){
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
         }else {
-            dbuser.setGmt_modified(System.currentTimeMillis());
-            dbuser.setAvatar_url(user.getAvatar_url());
-            dbuser.setName(user.getName());
-            dbuser.setToken(user.getToken());
-            userMapper.update(dbuser);
+            User dbuser=users.get(0);
+            User updateuser=new User();
+            updateuser.setGmtModified(System.currentTimeMillis());
+
+
+            updateuser.setAvatarUrl(user.getAvatarUrl());
+            updateuser.setName(user.getName());
+            updateuser.setToken(user.getToken());
+            UserExample example=new UserExample();
+            example.createCriteria().andIdEqualTo(dbuser.getId());
+            userMapper.updateByExampleSelective(updateuser,example);
         }
     }
 }
